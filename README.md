@@ -181,7 +181,7 @@ Customer form ──POST /api/quote──▶ live server-side fare + availabilit
 Razorpay Checkout ─ success ──POST /api/payments/verify──▶ verify signature → fetch payment → capture if needed
                                                          → record_payment_captured()  [confirmed]
 Razorpay ──webhook──▶ /api/webhooks/razorpay ──▶ verify HMAC → dedupe event → same idempotent RPCs
-Vercel Cron (10 min) ──▶ /api/cron/expire-bookings ──▶ expire_pending_bookings()  [cancelled, coupon released]
+pg_cron (10 min) + Vercel Cron (daily backup) ──▶ expire_pending_bookings()  [cancelled, coupon released]
 Staff /admin/bookings/<ref> ─ assign vehicle + driver ──▶ assign_vehicle()  [assigned; exclusion constraints]
 Driver /admin/trips ─ start / complete ──▶ update_trip_status()  [in_progress → completed]
 Customer cancel ──▶ computeRefund(policy) on server → cancel_booking()  [cancelled | refund_pending]
@@ -231,9 +231,8 @@ npm run build
 2. **Vercel project**
    - Import the repository and set every variable from `.env.example` for Production and Preview.
    - Use separate Razorpay *test* keys for Preview.
-   - `vercel.json` pins the region to `bom1` and schedules the hold-expiry cron every 10 minutes.
-     - Sub-daily crons need a paid Vercel plan.
-     - On Hobby, the schedule falls back to daily. Capacity is still correct, because availability ignores expired holds.
+   - `vercel.json` pins the region to `bom1` and schedules a daily backup run of the hold-expiry job (Hobby plans only allow daily crons).
+     - The 10-minute schedule runs inside Supabase via `pg_cron` (migration `20261021000007`). Capacity is correct either way, because availability ignores expired holds.
    - Add your domain. HTTPS and HSTS are applied automatically (see `next.config.ts`).
 3. **Razorpay**
    - Complete KYC and activate live mode.
@@ -254,7 +253,7 @@ npm run build
 
 - [ ] **Domain name and DNS** (for example `yatratravel.in`)
 - [ ] **Supabase** project on the Pro plan (backups and PITR): URL, publishable key, secret key
-- [ ] **Vercel** account (Pro plan for 10-minute cron and commercial use)
+- [ ] **Vercel** account (Hobby is non-commercial only — use Pro for a live business site)
 - [ ] **Razorpay** business account:
   - KYC
   - bank account
