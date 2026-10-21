@@ -1,26 +1,114 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Yatra Travel design tokens — temple gold, deep green, ivory, charcoal. */
+@theme {
+  --color-gold-50: #fdf8ea;
+  --color-gold-100: #f9edc9;
+  --color-gold-200: #f2d98f;
+  --color-gold-300: #e9c25a;
+  --color-gold-400: #d9a83a;
+  --color-gold-500: #c18e26; /* temple gold */
+  --color-gold-600: #9c701c;
+  --color-gold-700: #78541a;
+
+  --color-forest-50: #eef6f2;
+  --color-forest-100: #d3e8de;
+  --color-forest-300: #7fb39b;
+  --color-forest-500: #2a6b52;
+  --color-forest-700: #154a37;
+  --color-forest-800: #0f3d2e; /* deep green */
+  --color-forest-900: #0a2b20;
+
+  --color-ivory: #faf6ec;
+  --color-ivory-dark: #f1e9d6;
+  --color-charcoal: #2b2b2b;
+  --color-muted: #5f5a50;
+  --color-line: #e6dcc4;
+
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-heading), Georgia, serif;
+
+  --shadow-card: 0 1px 2px rgb(15 61 46 / 0.06), 0 8px 24px -12px rgb(15 61 46 / 0.18);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    background: var(--color-ivory);
+    color: var(--color-charcoal);
+    font-family: var(--font-sans);
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    color: var(--color-forest-900);
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-gold-400);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--color-gold-200);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Long-form text (policies, blog, destination descriptions). */
+  .prose-yatra {
+    line-height: 1.75;
+    max-width: 72ch;
+  }
+  .prose-yatra h2 {
+    font-size: 1.5rem;
+    margin: 2rem 0 0.75rem;
+  }
+  .prose-yatra h3 {
+    font-size: 1.2rem;
+    margin: 1.5rem 0 0.5rem;
+  }
+  .prose-yatra p,
+  .prose-yatra ul,
+  .prose-yatra ol {
+    margin: 0 0 1rem;
+  }
+  .prose-yatra ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+  .prose-yatra ol {
+    list-style: decimal;
+    padding-left: 1.25rem;
+  }
+  .prose-yatra a {
+    color: var(--color-forest-700);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .prose-yatra strong {
+    color: var(--color-forest-900);
+  }
+
+  /* Decorative temple-border divider. */
+  .temple-divider {
+    height: 12px;
+    background-image: radial-gradient(circle at 6px 6px, var(--color-gold-400) 2px, transparent 2.5px);
+    background-size: 18px 12px;
+    opacity: 0.6;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
