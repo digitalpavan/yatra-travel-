@@ -39,6 +39,11 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   poweredByHeader: false,
+  experimental: {
+    // Admin image uploads go through Server Actions (default limit 1 MB).
+    // Kept under Vercel's 4.5 MB request-body cap; images themselves max 4 MB.
+    serverActions: { bodySizeLimit: "4.4mb" },
+  },
   turbopack: {
     rules: {
       "*.css": {

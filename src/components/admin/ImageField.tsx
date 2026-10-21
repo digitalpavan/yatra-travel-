@@ -28,8 +28,8 @@ export function ImageField({
           <Checkbox name={`${name}_remove`} label="Remove current image" />
         </div>
       )}
-      <Field label={currentUrl ? "Replace image" : "Upload image"} name={name} hint="JPEG, PNG, WebP or AVIF, up to 5 MB.">
-        <Input type="file" name={name} accept="image/jpeg,image/png,image/webp,image/avif" hint="JPEG, PNG, WebP or AVIF, up to 5 MB." />
+      <Field label={currentUrl ? "Replace image" : "Upload image"} name={name} hint="JPEG, PNG, WebP or AVIF, up to 4 MB.">
+        <Input type="file" name={name} accept="image/jpeg,image/png,image/webp,image/avif" hint="JPEG, PNG, WebP or AVIF, up to 4 MB." />
       </Field>
       <Field label="Alt text (describe the image)" name={altName} hint="Required when an image is set. Describe what is shown for screen-reader users.">
         <Input name={altName} defaultValue={currentAlt ?? ""} maxLength={200} hint="Required when an image is set." />

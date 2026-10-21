@@ -2,7 +2,7 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+export const MAX_IMAGE_BYTES = 4 * 1024 * 1024; // Vercel caps request bodies at 4.5 MB
 export const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"] as const;
 type ImageType = (typeof IMAGE_TYPES)[number];
 
@@ -52,7 +52,7 @@ export async function uploadImage(file: File | null, folder: "destinations" | "p
   if (!(IMAGE_TYPES as readonly string[]).includes(file.type)) {
     return { ok: false, error: "Image must be a JPEG, PNG, WebP or AVIF file." };
   }
-  if (file.size > MAX_IMAGE_BYTES) return { ok: false, error: "Image must be 5 MB or smaller." };
+  if (file.size > MAX_IMAGE_BYTES) return { ok: false, error: "Image must be 4 MB or smaller." };
 
   const bytes = new Uint8Array(await file.arrayBuffer());
   const sniffed = sniffImageType(bytes.subarray(0, 64));

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireAnyStaff } from "@/lib/server/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { formatDateTime } from "@/lib/dates";
+import { formatDateTime, requestTime } from "@/lib/dates";
 import { VEHICLE_CLASS_LABELS, type BookingStatus, type VehicleClass } from "@/lib/types";
 import { Alert, Card, EmptyState, StatusBadge } from "@/components/ui";
 import { ActionForm, AdminSubmit } from "@/components/admin/ActionForm";
@@ -138,7 +138,7 @@ export default async function TripsPage({ searchParams }: PageProps<"/admin/trip
 
   // RLS: drivers only receive bookings they are actively assigned to; staff see all.
   const supabase = await createSupabaseServerClient();
-  const since = new Date(Date.now() - 24 * 3_600_000).toISOString();
+  const since = new Date(requestTime() - 24 * 3_600_000).toISOString();
   const [activeRes, doneRes] = await Promise.all([
     supabase
       .from("bookings")

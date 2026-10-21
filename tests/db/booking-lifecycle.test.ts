@@ -147,6 +147,18 @@ describe("vehicle allocation", () => {
     ).rejects.toThrow(/no_vehicle_overlap/);
   });
 
+  it("lets a driver read only the vehicle on their own assignment", async () => {
+    const [v1] = await ids("select id from public.vehicles where vehicle_class = 'muv' order by registration_number limit 1");
+    const [driver] = await ids("select id from public.drivers order by full_name limit 1");
+    await db.query("update public.drivers set user_id = $1 where id = $2", [driverUser, driver]);
+    const asDriver = () =>
+      db.as("authenticated", driverUser, () => db.query<{ id: string }>("select id from public.vehicles"));
+    expect((await asDriver()).rows).toHaveLength(0);
+    const b = await confirmed();
+    await db.as("authenticated", staff, () => db.query("select public.assign_vehicle($1, $2, $3)", [b.id, v1, driver]));
+    expect((await asDriver()).rows.map((r) => r.id)).toEqual([v1]);
+  });
+
   it("rejects assignment by customers and of unpaid bookings", async () => {
     const [vehicle] = await ids("select id from public.vehicles where vehicle_class = 'muv' limit 1");
     const [driver] = await ids("select id from public.drivers limit 1");
